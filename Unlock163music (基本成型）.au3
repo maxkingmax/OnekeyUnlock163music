@@ -1,30 +1,31 @@
-﻿
-#include <MsgBoxConstants.au3>
 #NoTrayIcon
 #Region ;**** 由 AccAu3Wrapper_GUI 创建指令 ****
-#AccAu3Wrapper_Outfile_x64=Unlock163music_x64.exe
-#AccAu3Wrapper_UseUpx=y
+#AccAu3Wrapper_Icon=C:\Windows\xsbao.ico
+#AccAu3Wrapper_Outfile_x64=Unlock163music一键部署_x64.exe
+#AccAu3Wrapper_Res_Fileversion=1.0
+#AccAu3Wrapper_Res_Fileversion_AutoIncrement=p
 #AccAu3Wrapper_Res_Language=2052
-#AccAu3Wrapper_Res_requestedExecutionLevel=None
+#AccAu3Wrapper_Res_requestedExecutionLevel=requireAdministrator
+#AccAu3Wrapper_Run_AU3Check=n
 #EndRegion ;**** 由 AccAu3Wrapper_GUI 创建指令 ****
-
+#include <MsgBoxConstants.au3>
 #include <InetConstants.au3>
-
 #include <WinAPIFiles.au3>
-
-
 #include <Array.au3> ; Only required to display the arrays
 #include <File.au3>
-;#include <MsgBoxConstants.au3>
 
 
+$dlport='2333'
+$show=@SW_HIDE
+$node_exe=@ScriptDir&"\UnblockNeteaseMusic-master\node.exe"
+$app_js=@ScriptDir&"\UnblockNeteaseMusic-master\app.js"
+$app_js_folder=@ScriptDir&"\UnblockNeteaseMusic-master\src"
 
+FileInstall("7z.exe",@ScriptDir&"\7z.exe",1)
+FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
 
-
-
-
-Local $sFilePath =@ScriptDir&"\temp.zip"
-
+If Not FileExists($app_js) Or Not FileExists($app_js_folder) Then
+Local $sFilePath =@ScriptDir&"\nondanee.zip"
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
     Local $hDownload = InetGet("https://github.com/nondanee/UnblockNeteaseMusic/archive/master.zip", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
 
@@ -41,12 +42,15 @@ Local $sFilePath =@ScriptDir&"\temp.zip"
     InetClose($hDownload)
 
     ; Display details about the total number of bytes read and the filesize.
-    MsgBox($MB_SYSTEMMODAL, "", "The total download size: " & $iBytesSize & @CRLF & _
-            "The total filesize: " & $iFileSize)
+    MsgBox($MB_SYSTEMMODAL, "UnblockNeteaseMusic 已经下载", "UnblockNeteaseMusic 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
+            "远程文件: " & $iFileSize,2)
 
     ; Delete the file.
- 
+	RunWait(@ScriptDir&"\7z.exe  x "&$sFilePath&" -y",'',$show)
+	FileDelete($sFilePath)
+EndIf
 
+If Not FileExists($node_exe) Then
 Local $sFilePath2 =@ScriptDir&"\node.zip"
 
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
@@ -65,54 +69,41 @@ Local $sFilePath2 =@ScriptDir&"\node.zip"
     InetClose($hDownload)
 
     ; Display details about the total number of bytes read and the filesize.
-    MsgBox($MB_SYSTEMMODAL, "", "The total download size: " & $iBytesSize & @CRLF & _
-            "The total filesize: " & $iFileSize)
-
-    ; Delete the file.
-
-
-
-
-
-
-FileInstall("7z.exe",@ScriptDir&"\7z.exe",1)
-FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
-;FileInstall("Unlock163music.zip",@ScriptDir&"\Unlock163music.zip",1)
-
-
+    MsgBox($MB_SYSTEMMODAL, "Node 已经下载  ", "Node 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
+            "远程文件: " & $iFileSize,2)
+	RunWait(@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&@WorkingDir&"\UnblockNeteaseMusic-master\",'',$show)
+	FileDelete($sFilePath2)
+EndIf
 ;Local $sFilePath ="temp.zip"
 ;Local $sFilePath2 ="node.zip"
 ;MsgBox(0,"",@ScriptDir&"\7z.exe  x "&$sFilePath&" -y -o"&@WorkingDir&"\Music\")
 ;MsgBox(0,"",@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -o"&@WorkingDir&"\Music\")
-RunWait(@ScriptDir&"\7z.exe  x "&$sFilePath&" -y")
-RunWait(@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&@WorkingDir&"\UnblockNeteaseMusic-master\")
-
-;" e "&$sFilePath2&" node.ex?  -r0 -o"&@ScriptFullPath&"\Music"
-
-
-;FileDelete(@LocalAppDataDir&"\Netease\CloudMusic\config")
-;FileInstall("config",@LocalAppDataDir&"\Netease\CloudMusic\config",1)
-;~ FileDelete($sFilePath)
-;~ FileDelete($sFilePath2)
-;FileDelete("7z.exe")
-;FileDelete("7z.dll")
-;FileDelete("Unlock163music.zip")
 
 
 
 
 
-$filelist=_FileListToArrayRec ( @ScriptDir ,  "node.exe" ,1 ,1, 2, 2 )
-_ArrayDisplay($filelist)
+;~ 
+;~ 
+;~ ;FileDelete("7z.exe")
+;~ ;FileDelete("7z.dll")
 
+
+
+
+
+
+;~ $filelist=_FileListToArrayRec ( @ScriptDir ,  "node.exe" ,1 ,1, 2, 2 )
+;~ _ArrayDisplay($filelist)
+If FileExists($app_js) And FileExists($node_exe) Then
 
 TCPStartup()
 $sIP = TCPNameToIP("music.163.com")
 TCPShutdown()
 
 ;~ MsgBox(0,$sIP,$sIP)
-MsgBox(0,"",$filelist[1] &' '& "app.js" &" -p 2333 -f "&$sIP&@CRLF&@WorkingDir&"\UnblockNeteaseMusic-master\")
-$pid=Run($filelist[1] &' '& "app.js" &" -p 2333 -f "&$sIP,@WorkingDir&"\UnblockNeteaseMusic-master\")
+;~ MsgBox(0,"",$node_exe &' '& "app.js" &" -p 2333 -f "&$sIP&@CRLF&@WorkingDir&"\UnblockNeteaseMusic-master\")
+$pid=Run($node_exe &' '& "app.js" &" -p "&$dlport&" -f "&$sIP,@WorkingDir&"\UnblockNeteaseMusic-master\",$show)
 config()
 $pid2=Run(RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\cloudmusic.exe",""))
 Do
@@ -120,47 +111,52 @@ Do
 Until Not ProcessExists($pid2)
 ProcessClose($pid)
 ProcessClose("node.exe")
+EndIf
 
 Func config()
   Local $proxy[11],$temparray,$proxyc[9]
-$proxy[0]= '{'
-$proxy[1]='     "Proxy": {'
-$proxy[2]='      "Type": "http",'
-$proxy[3]='   		 "http": {'
-$proxy[4]='		     "Host": "127.0.0.1",'
-$proxy[5]='			 "Password": "",'
-$proxy[6]='     	 "Port": "2333",'
-$proxy[7]='      	 "UserName": ""'
-$proxy[8]='    				}'
-$proxy[9]='  			}'
-$proxy[10]='}'
+	$proxy[0]= '{'
+	$proxy[1]='     "Proxy": {'
+	$proxy[2]='      "Type": "http",'
+	$proxy[3]='   		 "http": {'
+	$proxy[4]='		     "Host": "127.0.0.1",'
+	$proxy[5]='			 "Password": "",'
+	$proxy[6]='     	 "Port": "'&$dlport&'",'
+	$proxy[7]='      	 "UserName": ""'
+	$proxy[8]='    				}'
+	$proxy[9]='  			}'
+	$proxy[10]='}'
   
 
-$proxyc[0]='     "Proxy": {'
-$proxyc[1]='      "Type": "http",'
-$proxyc[2]='    "http": {'
-$proxyc[3]='       "Host": "127.0.0.1",'
-$proxyc[4]='      "Password": "",'
-$proxyc[5]='     "Port": "2333",'
-$proxyc[6]='      "UserName": ""'
-$proxyc[7]='    }'
-$proxyc[8]='  },'
+	$proxyc[0]='     "Proxy": {'
+	$proxyc[1]='      "Type": "http",'
+	$proxyc[2]='    "http": {'
+	$proxyc[3]='       "Host": "127.0.0.1",'
+	$proxyc[4]='      "Password": "",'
+	$proxyc[5]='     "Port": "'&$dlport&'",'
+	$proxyc[6]='      "UserName": ""'
+	$proxyc[7]='    }'
+	$proxyc[8]='  },'
 
   
   
   
-  _ArrayDisplay($proxy)
-  $file=@LocalAppDataDir&"\Netease\CloudMusic\config"
+;~   _ArrayDisplay($proxy)
+Local  $file=@LocalAppDataDir&"\Netease\CloudMusic\config"
+
   If Not FileExists($file) Then
 	  $sfile=FileOpen($file,256+1)
 	  _FileWriteFromArray($sfile,$proxy,0)
 	  FileClose($sfile)
   Else
 	  _FileReadToArray($file,$temparray,0)
-	  _ArrayDisplay($temparray)
-	   _ArrayInsert($temparray, "1;1;1;1;1;1;1;1;1",$proxyc)
-	   _ArrayDisplay($temparray)
-	   	  $sfile=FileOpen($file,256+2)
+;~ 	  _ArrayDisplay($temparray)
+	  _ArraySearch ($temparray,StringStripWS($proxy[2],8))
+	  If @error Then
+	  _ArrayInsert($temparray, "1;1;1;1;1;1;1;1;1",$proxyc)
+	  EndIf
+;~ 	  _ArrayDisplay($temparray)
+	  $sfile=FileOpen($file,256+2)
 	  _FileWriteFromArray($sfile,$temparray,0)
 	  FileClose($sfile)
   EndIf
