@@ -1,4 +1,4 @@
-#NoTrayIcon
+;~ #NoTrayIcon
 #Region ;**** 由 AccAu3Wrapper_GUI 创建指令 ****
 #AccAu3Wrapper_Icon=C:\Windows\xsbao.ico
 #AccAu3Wrapper_Outfile_x64=Unlock163music一键部署_x64.exe
@@ -20,11 +20,14 @@ $show=@SW_HIDE
 $node_exe=@ScriptDir&"\UnblockNeteaseMusic-master\node.exe"
 $app_js=@ScriptDir&"\UnblockNeteaseMusic-master\app.js"
 $app_js_folder=@ScriptDir&"\UnblockNeteaseMusic-master\src"
-
+$music_exe=RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\cloudmusic.exe","")
 FileInstall("7z.exe",@ScriptDir&"\7z.exe",1)
 FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
 
+FileCreateShortcut(@ScriptFullPath,@DesktopDir&"\网易云音乐(解锁版).lnk",@ScriptDir,"","解锁灰色歌曲",$music_exe,"",0)
+
 If Not FileExists($app_js) Or Not FileExists($app_js_folder) Then
+	TrayTip("部署中...","正在下载nondanee的脚本包",2,1)
 Local $sFilePath =@ScriptDir&"\nondanee.zip"
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
     Local $hDownload = InetGet("https://github.com/nondanee/UnblockNeteaseMusic/archive/master.zip", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
@@ -46,13 +49,14 @@ Local $sFilePath =@ScriptDir&"\nondanee.zip"
             "远程文件: " & $iFileSize,2)
 
     ; Delete the file.
-	RunWait(@ScriptDir&"\7z.exe  x "&$sFilePath&" -y",'',$show)
+	TrayTip("部署中...","正在解压nondanee的脚本包",2,1)
+	RunWait(@ScriptDir&"\7z.exe  x "&$sFilePath&" -y -o"&@WorkingDir&"\",'',$show)
 	FileDelete($sFilePath)
 EndIf
 
 If Not FileExists($node_exe) Then
 Local $sFilePath2 =@ScriptDir&"\node.zip"
-
+TrayTip("部署中...","正在下载 node.exe",2,1)
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
     Local $hDownload = InetGet("https://npm.taobao.org/mirrors/node/v14.15.5/node-v14.15.5-win-x64.zip", $sFilePath2, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
 
@@ -71,6 +75,8 @@ Local $sFilePath2 =@ScriptDir&"\node.zip"
     ; Display details about the total number of bytes read and the filesize.
     MsgBox($MB_SYSTEMMODAL, "Node 已经下载  ", "Node 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
             "远程文件: " & $iFileSize,2)
+				TrayTip("部署中...","正在提取 node.exe",2,1)
+
 	RunWait(@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&@WorkingDir&"\UnblockNeteaseMusic-master\",'',$show)
 	FileDelete($sFilePath2)
 EndIf
@@ -97,6 +103,9 @@ EndIf
 ;~ _ArrayDisplay($filelist)
 If FileExists($app_js) And FileExists($node_exe) Then
 
+FileDelete(@ScriptDir&"\7z.exe")
+FileDelete(@scriptdir&"\7z.dll")
+
 TCPStartup()
 $sIP = TCPNameToIP("music.163.com")
 TCPShutdown()
@@ -105,8 +114,14 @@ TCPShutdown()
 ;~ MsgBox(0,"",$node_exe &' '& "app.js" &" -p 2333 -f "&$sIP&@CRLF&@WorkingDir&"\UnblockNeteaseMusic-master\")
 $pid=Run($node_exe &' '& "app.js" &" -p "&$dlport&" -f "&$sIP,@WorkingDir&"\UnblockNeteaseMusic-master\",$show)
 config()
-$pid2=Run(RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\cloudmusic.exe",""))
+$pid2=Run($music_exe)
+Opt("TrayAutoPause",0)
+Opt("TrayMenuMode",1)
+TraySetState(4)
+TraySetToolTip("网易云音乐解锁服务运行中...")
+TrayTip("服务运行中...","退出“网易云音乐”,服务自动停止。",2,1)
 Do
+	
 	Sleep(100)
 Until Not ProcessExists($pid2)
 ProcessClose($pid)
