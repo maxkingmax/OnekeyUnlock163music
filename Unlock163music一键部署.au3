@@ -27,7 +27,7 @@ FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
 FileCreateShortcut(@ScriptFullPath,@DesktopDir&"\网易云音乐(解锁版).lnk",@ScriptDir,"","解锁灰色歌曲",$music_exe,"",0)
 
 If Not FileExists($app_js) Or Not FileExists($app_js_folder) Then
-	TrayTip("部署中...","正在下载nondanee的脚本包",2,1)
+	TraySetToolTip("正在下载nondanee的脚本包")
 Local $sFilePath =@ScriptDir&"\nondanee.zip"
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
     Local $hDownload = InetGet("https://github.com/nondanee/UnblockNeteaseMusic/archive/master.zip", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
@@ -49,14 +49,16 @@ Local $sFilePath =@ScriptDir&"\nondanee.zip"
             "远程文件: " & $iFileSize,2)
 
     ; Delete the file.
-	TrayTip("部署中...","正在解压nondanee的脚本包",2,1)
-	RunWait(@ScriptDir&"\7z.exe  x "&$sFilePath&" -y -o"&@WorkingDir&"\",'',$show)
+	TraySetToolTip("正在解压nondanee的脚本包")
+	$sFilePath=FileGetShortName($sFilePath)
+;~ 	MsgBox(0,"","7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"')
+	RunWait("7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"','',$show)
 	FileDelete($sFilePath)
 EndIf
 
 If Not FileExists($node_exe) Then
 Local $sFilePath2 =@ScriptDir&"\node.zip"
-TrayTip("部署中...","正在下载 node.exe",2,1)
+TraySetToolTip("正在下载 node")
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
     Local $hDownload = InetGet("https://npm.taobao.org/mirrors/node/v14.15.5/node-v14.15.5-win-x64.zip", $sFilePath2, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
 
@@ -75,9 +77,10 @@ TrayTip("部署中...","正在下载 node.exe",2,1)
     ; Display details about the total number of bytes read and the filesize.
     MsgBox($MB_SYSTEMMODAL, "Node 已经下载  ", "Node 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
             "远程文件: " & $iFileSize,2)
-				TrayTip("部署中...","正在提取 node.exe",2,1)
-
-	RunWait(@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&@WorkingDir&"\UnblockNeteaseMusic-master\",'',$show)
+				TraySetToolTip("正在提取 node.exe")
+$sFilePath2=FileGetShortName($sFilePath2)
+;~ MsgBox(0,"",@ScriptDir&"\7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&@WorkingDir&"\UnblockNeteaseMusic-master\")
+	RunWait("7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&'"'&@WorkingDir&'\UnblockNeteaseMusic-master\"','',$show)
 	FileDelete($sFilePath2)
 EndIf
 ;Local $sFilePath ="temp.zip"
@@ -118,8 +121,8 @@ $pid2=Run($music_exe)
 Opt("TrayAutoPause",0)
 Opt("TrayMenuMode",1)
 TraySetState(4)
-TraySetToolTip("网易云音乐解锁服务运行中...")
-TrayTip("服务运行中...","退出“网易云音乐”,服务自动停止。",2,1)
+TraySetToolTip("网易云音乐解锁服务运行中...(退出网易云音乐,服务自动停止。)")
+;~ TrayTip("服务运行中...","退出“网易云音乐”,服务自动停止。",2,1)
 Do
 	
 	Sleep(100)
