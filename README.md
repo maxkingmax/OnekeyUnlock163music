@@ -9,3 +9,4 @@ Win10系统下一键部署nondanee 的“解锁网易云音乐客户端变灰歌
 
 ##目录位置不限，在哪运行，资源文件就保存在哪
 
+感谢来源：https://github.com/nondanee/UnblockNeteaseMusic
