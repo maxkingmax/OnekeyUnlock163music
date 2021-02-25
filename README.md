@@ -1,7 +1,9 @@
 # win10-Auto-deploy-nondanee-unblockneteasemusic
 Win10系统下一键部署nondanee 的“解锁网易云音乐客户端变灰歌曲”
 
-##系统  WIN10 X64
+##需要提前安装好网易云音乐客户端
+
+##系统  WIN10 X64；
 
 ##管理员模式运行
 
