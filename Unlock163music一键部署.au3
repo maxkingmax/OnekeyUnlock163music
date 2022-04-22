@@ -1,3 +1,6 @@
+#Region ;**** 参数创建于 ACNWrapper_GUI ****
+#PRE_Res_requestedExecutionLevel=None
+#EndRegion ;**** 参数创建于 ACNWrapper_GUI ****
 ;~ #NoTrayIcon
 #Region ;**** 由 AccAu3Wrapper_GUI 创建指令 ****
 #AccAu3Wrapper_Icon=C:\Windows\xsbao.ico
@@ -13,19 +16,21 @@
 #include <WinAPIFiles.au3>
 #include <Array.au3> ; Only required to display the arrays
 #include <File.au3>
-
-
-$dlport='2333'
+FileInstall('unblockneteasemusic.cfg',@ScriptDir&"\unblockneteasemusic.cfg",0)
+$file=@LocalAppDataDir&"\Netease\CloudMusic\localdata"
+$dlport=''
 $show=@SW_HIDE
-$node_exe=@ScriptDir&"\UnblockNeteaseMusic-master\node.exe"
-$app_js=@ScriptDir&"\UnblockNeteaseMusic-master\app.js"
-$app_js_folder=@ScriptDir&"\UnblockNeteaseMusic-master\src"
+$node_exe=@ScriptDir&"\unblockneteasemusic-win-x64.exe"
+;$app_js=@ScriptDir&"\UnblockNeteaseMusic-master\app.js"
+;$app_js_folder=@ScriptDir&"\UnblockNeteaseMusic-master\src"
 $music_exe=RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\cloudmusic.exe","")
-FileInstall("7z.exe",@ScriptDir&"\7z.exe",1)
-FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
+If @error Then $music_exe=@ScriptDir&"\cloudmusic.exe"
+;FileInstall("7z.exe",@ScriptDir&"\7z.exe",1)
+;FileInstall("7z.dll",@ScriptDir&"\7z.dll",1)
 
 FileCreateShortcut(@ScriptFullPath,@DesktopDir&"\网易云音乐(解锁版).lnk",@ScriptDir,"","解锁灰色歌曲",$music_exe,"",0)
 
+#comments-start
 If Not FileExists($app_js) Or Not FileExists($app_js_folder) Then
 	TraySetToolTip("正在下载nondanee的脚本包")
 Local $sFilePath =@ScriptDir&"\nondanee.zip"
@@ -55,8 +60,10 @@ Local $sFilePath =@ScriptDir&"\nondanee.zip"
 	RunWait("7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"','',$show)
 	FileDelete($sFilePath)
 EndIf
+#comments-end
 
-If Not FileExists($node_exe) Then
+If Not FileExists($node_exe) Then FileInstall('unblockneteasemusic-win-x64.exe',$node_exe,0)
+#comments-start
 Local $sFilePath2 =@ScriptDir&"\node.zip"
 TraySetToolTip("正在下载 node")
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
@@ -83,6 +90,7 @@ $sFilePath2=FileGetShortName($sFilePath2)
 	RunWait("7z.exe  e "&$sFilePath2&" node.ex?  -r0 -y -o"&'"'&@WorkingDir&'\UnblockNeteaseMusic-master\"','',$show)
 	FileDelete($sFilePath2)
 EndIf
+
 ;Local $sFilePath ="temp.zip"
 ;Local $sFilePath2 ="node.zip"
 ;MsgBox(0,"",@ScriptDir&"\7z.exe  x "&$sFilePath&" -y -o"&@WorkingDir&"\Music\")
@@ -108,6 +116,8 @@ If FileExists($app_js) And FileExists($node_exe) Then
 
 FileDelete(@ScriptDir&"\7z.exe")
 FileDelete(@scriptdir&"\7z.dll")
+#comments-end
+
 
 TCPStartup()
 $sIP = TCPNameToIP("music.163.com")
@@ -115,7 +125,14 @@ TCPShutdown()
 
 ;~ MsgBox(0,$sIP,$sIP)
 ;~ MsgBox(0,"",$node_exe &' '& "app.js" &" -p 2333 -f "&$sIP&@CRLF&@WorkingDir&"\UnblockNeteaseMusic-master\")
-$pid=Run($node_exe &' '& "app.js" &" -p "&$dlport&" -f "&$sIP,@WorkingDir&"\UnblockNeteaseMusic-master\",$show)
+;$pid=Run($node_exe &' '&" -p "&$dlport&" -f "&$sIP,@WorkingDir&"\UnblockNeteaseMusic-master\",$show)
+If $dlport="" Then
+$pid=Run($node_exe,"",$show)
+Else
+	$pid=Run($node_exe&" -p "&$dlport,"",$show)
+
+EndIf
+
 config()
 $pid2=Run($music_exe)
 Opt("TrayAutoPause",0)
@@ -126,12 +143,16 @@ TraySetToolTip("网易云音乐解锁服务运行中...(退出网易云音乐,�
 Do
 	
 	Sleep(100)
-Until Not ProcessExists($pid2)
+Until Not ProcessExists($pid2) Or Not ProcessExists($pid)
 ProcessClose($pid)
-ProcessClose("node.exe")
-EndIf
+ProcessClose($pid2)
+FileMove(@ScriptDir&"\localdata",$file,1)
+
+Sleep(1000)
+Exit
 
 Func config()
+	#comments-start
   Local $proxy[11],$temparray,$proxyc[9]
 	$proxy[0]= '{'
 	$proxy[1]='     "Proxy": {'
@@ -158,7 +179,7 @@ Func config()
 
   
   
-  
+
 ;~   _ArrayDisplay($proxy)
 Local  $file=@LocalAppDataDir&"\Netease\CloudMusic\config"
 
@@ -178,6 +199,17 @@ Local  $file=@LocalAppDataDir&"\Netease\CloudMusic\config"
 	  _FileWriteFromArray($sfile,$temparray,0)
 	  FileClose($sfile)
   EndIf
+  #comments-end
   
+  ;Local  
+  If Not FileExists($file) Then 
+	  FileCopy(@ScriptDir&"\unblockneteasemusic.cfg",$file,1+8)
+  Else
+	  FileMove($file,@ScriptDir&"\localdata",1)
+	  FileCopy(@ScriptDir&"\unblockneteasemusic.cfg",$file,1)
+  EndIf
+  
+	  
+
 EndFunc
 
