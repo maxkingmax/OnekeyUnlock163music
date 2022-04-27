@@ -1,5 +1,6 @@
-# win10-Auto-deploy-nondanee-unblockneteasemusic
 Win10系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌曲”
+
+##改成外挂程序了，建议下载至网易云音乐程序目录下运行，X64如不能运行就用X86（编译的X64放到其它机器上有时不运行，X86能运行）
 
 ##需要提前安装好网易云音乐客户端
 
@@ -9,7 +10,6 @@ Win10系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌
 
 ##使用unblockneteasemusic-win-x64.exe 默认端口；不显示GUI
 
-##建议下载至网易云音乐程序目录下运行
 
 ##需要更新脚本时，到https://github.com/UnblockNeteaseMusic/server/releases
 下载unblockneteasemusic-win-x64.exe覆盖即可
