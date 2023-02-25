@@ -19,7 +19,7 @@ Win10系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌
 
 功能：就是功能整合，没有技术含量。
 
-1.首次运行程序文件，创建解锁版桌面快捷方式，下次运行快捷方式即可；
+1.首次运行程序文件，创建解锁版桌面快捷方式，下次运行快捷方式即可；![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/desttoplinkicon.png)
 
 2.无界面启动unblockneteasemusic-win-x64.exe 和 网易云音乐，并自动给云音乐设置代理模式，使用unblockneteasemusic-win-x64.exe默认的端口和设置。
 
