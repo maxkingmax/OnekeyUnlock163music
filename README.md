@@ -17,6 +17,10 @@ Win10系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌
 注意事项：不要随便升级网易云音乐，经测试 https://d1.music.126.net/dmusic/cloudmusicsetup2.9.9.199909.exe 可用
 ![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/cloudmusicV.png)
 
+2.9.9绿色便携优化版：https://wwt.lanzoul.com/iu3Ro054v9rc 密码:7bef
+2.9.8绿色便携优化版：https://wwt.lanzoul.com/ivYEG01yg9qh 密码:bs77
+
+
 功能：就是功能整合，没有技术含量。
 
 1.首次运行程序文件，创建解锁版桌面快捷方式，下次运行快捷方式即可；![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/desttoplinkicon.png)
@@ -28,3 +32,4 @@ Win10系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌
 鸣谢：
 https://github.com/nondanee/UnblockNeteaseMusic
 https://github.com/UnblockNeteaseMusic/server/releases
+吾爱破解论坛 roqi  制作的免升级版本 原贴地址：https://www.52pojie.cn/thread-1609706-1-1.html
