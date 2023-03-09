@@ -30,12 +30,12 @@ If @error Then $music_exe=@ScriptDir&"\cloudmusic.exe"
 
 FileCreateShortcut(@ScriptFullPath,@DesktopDir&"\网易云音乐(解锁版).lnk",@ScriptDir,"","解锁灰色歌曲",$music_exe,"",0)
 
-#comments-start
-If Not FileExists($app_js) Or Not FileExists($app_js_folder) Then
-	TraySetToolTip("正在下载nondanee的脚本包")
-Local $sFilePath =@ScriptDir&"\nondanee.zip"
+
+If Not FileExists($node_exe)  Then
+	TraySetToolTip("正在下载nondanee")
+Local $sFilePath =$node_exe
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
-    Local $hDownload = InetGet("https://github.com/nondanee/UnblockNeteaseMusic/archive/master.zip", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
+    Local $hDownload = InetGet("https://github.com/UnblockNeteaseMusic/server/releases/download/v0.27.0/unblockneteasemusic-win-x64.exe", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
 
     ; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
     Do
@@ -52,17 +52,19 @@ Local $sFilePath =@ScriptDir&"\nondanee.zip"
     ; Display details about the total number of bytes read and the filesize.
     MsgBox($MB_SYSTEMMODAL, "UnblockNeteaseMusic 已经下载", "UnblockNeteaseMusic 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
             "远程文件: " & $iFileSize,2)
-
-    ; Delete the file.
-	TraySetToolTip("正在解压nondanee的脚本包")
-	$sFilePath=FileGetShortName($sFilePath)
+	    EndIf
+#comments-start
+ ;~    ; Delete the file.
+;~ 	TraySetToolTip("正在解压nondanee的脚本包")
+;~ 	$sFilePath=FileGetShortName($sFilePath)
 ;~ 	MsgBox(0,"","7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"')
-	RunWait("7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"','',$show)
-	FileDelete($sFilePath)
-EndIf
-#comments-end
+;~ 	RunWait("7z.exe  x "&$sFilePath&" -y -o"&'"'&@WorkingDir&'\"','',$show)
+;~ 	FileDelete($sFilePath)
+
+
 
 If Not FileExists($node_exe) Then FileInstall('unblockneteasemusic-win-x64.exe',$node_exe,0)
+#comments-end
 #comments-start
 Local $sFilePath2 =@ScriptDir&"\node.zip"
 TraySetToolTip("正在下载 node")
