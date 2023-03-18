@@ -69,6 +69,7 @@ EndIf
 
 Global $Button4 = GUICtrlCreateButton("部署并运行", 480, 120, 105, 33)
 GUICtrlSetState(-1,$gui_disable)
+If FileExists($music_exe) And FileExists($node_exe) Then GUICtrlSetState(-1,$gui_enable)
 Global $Checkbox1 = GUICtrlCreateCheckbox("创建一键运行桌面快捷方式", 24, 128, 193, 17)
 GUICtrlSetState(-1,$GUI_CHECKED)
 Global	$Button5 = GUICtrlCreateButton("下载", 536, 32, 49, 25)
