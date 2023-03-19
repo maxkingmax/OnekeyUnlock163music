@@ -247,7 +247,7 @@ TraySetToolTip("网易云音乐解锁服务运行中...(退出网易云音乐,�
 ;~ TrayTip("服务运行中...","退出“网易云音乐”,服务自动停止。",2,1)
 Do
 	
-	Sleep(800)  ;~ 实际编译前可根据情况调整此值 ，可以有效的减少系统资源的战用。
+	Sleep(800)  ;~ 实际编译前可根据情况调整此值 ，可以有效的减少CPU的占用。
 Until Not ProcessExists($pid2) Or Not ProcessExists($pid)
 ProcessClose($pid)
 ProcessClose($pid2)
