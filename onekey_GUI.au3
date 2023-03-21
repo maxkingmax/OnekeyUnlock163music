@@ -19,6 +19,7 @@
 #include <InetConstants.au3>
 #include <WinAPIFiles.au3>
 #include <File.au3>
+#include <Crypt.au3>
 Opt("TrayAutoPause",0)
 
 FileInstall('unblockneteasemusic.cfg',@ScriptDir&"\unblockneteasemusic.cfg",0)
@@ -27,7 +28,7 @@ Global $node_exe=@ScriptDir&"\unblockneteasemusic-win-x64.exe"
 Global $show=0
 Global $music_exe=@ScriptDir&"\CloudMusic\cloudmusic.exe"
 Global $file=StringTrimRight ($music_exe,14)&"\Netease\CloudMusic\localdata"
-
+Global $node_md5="0xEADF3AC9F0BCFA0C5EB8076A0C67A243"
 checkfile()
 
 Func checkfile()
@@ -43,6 +44,7 @@ Func readfile()
 $music_exe=IniRead($settingfile,"path","exe163",$music_exe)
 $node_exe=IniRead($settingfile,"path","exenode",$node_exe)
 $file=StringTrimRight ($music_exe,14)&"\Netease\CloudMusic\localdata"
+$node_md5=IniRead($settingfile,"md5","node","0xEADF3AC9F0BCFA0C5EB8076A0C67A243")
 EndFunc
 
 
@@ -51,12 +53,14 @@ Func onekeygui()
 	Opt("TrayIconHide",1)
 #Region ### START Koda GUI section ### Form=
 Global $Form1_1 = GUICreate("一键部署", 598, 164, -1,-1)
-$Label1 = GUICtrlCreateLabel("1.请指定网易云音乐主程序（版本低于 2.9.9）的文件位置：(强烈建议下载)", 16, 8, 570, 17)
-Global $Input1 = GUICtrlCreateInput($music_exe, 16, 32, 457, 21)
+$Label1 = GUICtrlCreateLabel("1.请指定网易云音乐主程序（版本要低于 2.10）的文件位置：(强烈建议下载)", 16, 8, 570, 17)
+Global $Labelver = GUICtrlCreateLabel("", 470, 8, 90, 17)
+
+Global $Input1 = GUICtrlCreateInput($music_exe, 16, 32, 457, 21,$ES_READONLY)
 
 Global $Button1 = GUICtrlCreateButton("浏览...", 480, 32, 49, 25)
 $Label2 = GUICtrlCreateLabel("2.指定 unblockneteasemusic-win-x64.exe 的位置：（可下载)", 16, 64, 573, 17)
-Global $Input2 = GUICtrlCreateInput($node_exe, 16, 88, 457, 21)
+Global $Input2 = GUICtrlCreateInput($node_exe, 16, 88, 457, 21,$ES_READONLY)
 Global	$Button2 = GUICtrlCreateButton("浏览...", 480, 88, 49, 25)
 
 Global	$Button3 = GUICtrlCreateButton("下载", 536, 88, 49, 25)
@@ -81,73 +85,133 @@ Else
 EndIf
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
+check163()
+checknode()
 While 1
 	$nMsg = GUIGetMsg()
+;~ 	Sleep(500)
+
+
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
+			
 			Exit
 		Case $Button1
+			$tmp=GUICtrlRead($input1)
 			$music_exe=FileOpenDialog("请指定网易云音乐主程序的位置：",@ScriptDir,"可执行程序 (*.exe)" ,1,"cloudmusic.exe",$Form1_1)
-			If Not FileExists($music_exe) Or StringInStr($music_exe,"cloudmusic.exe") =0 Then 
-				MsgBox(0,"请重新指定位置",'请重新指定位置')
-				ControlClick($Form1_1,"",$Button1)
+			If @error Then 
+				GUICtrlSetData($input1,$tmp)
 			Else
-				GUICtrlSetData($input1,$music_exe)
+				
+				If Not FileExists($music_exe) Or StringInStr($music_exe,"cloudmusic.exe") =0 Then 
+					MsgBox(5,"文件指定错误",'请重新指定位置',0,$Form1_1)
+					ControlClick($Form1_1,"",$Button1)
+				Else
+					GUICtrlSetData($input1,$music_exe)
+				EndIf
 			EndIf
-			
+			check163()
 			
 		Case $Button2
-			$node_exe=FileOpenDialog("请指定 unblockneteasemusic 的位置：",@ScriptDir,"可执行程序 (*.exe)" ,1,"unblockneteasemusic-win-x64.exe",$Form1_1)
 			
-			If Not FileExists($node_exe) Then
-				ControlClick($Form1_1,"",$Button2)
+			$tmp2=GUICtrlRead($input2)
+			$node_exe=FileOpenDialog("请指定 unblockneteasemusic 的位置：",@ScriptDir,"可执行程序 (*.exe)" ,1,"unblockneteasemusic-win-x64.exe",$Form1_1)
+			If @error Then 
+				GUICtrlSetData($input2,$tmp2)
 			Else
 				
+				ConsoleWrite(checknodever(GUICtrlRead($Input2)) = $node_md5 ) 
+;~ 				ConsoleWrite($node_md5) 
+;~ 				ConsoleWrite
+			If Not FileExists($node_exe)  Then
+				ControlClick($Form1_1,"",$Button2)
+			Else
+
 				GUICtrlSetData($input2,$node_exe)
+
 			EndIf
+			EndIf
+			checknode()
 		Case $Button3
+			
 			downloadnode()
+			checknode()
 		Case $Button4
-			If Not FileExists(GUICtrlRead($Input1)) Or StringInStr(GUICtrlRead($Input1),"cloudmusic.exe") =0 Then 
-				MsgBox(0,"请重新指定位置",'请重新指定位置')
-				ControlClick($Form1_1,"",$Button1)
-				
-			Else
-				GUICtrlSetData($input1,$music_exe)
+			checknode()
+			check163()
 				IniWrite($settingfile,'path',"exe163",GUICtrlRead($Input1))
-			EndIf
-			If Not FileExists(GUICtrlRead($Input2))  Then 
-				MsgBox(0,"请重新指定位置",'请重新指定位置')
-				GUICtrlSetState($button3,$gui_enable)
-				ControlClick($Form1_1,"",$Button2)
-				
-			Else
-				GUICtrlSetData($input2,$node_exe)
 				IniWrite($settingfile,'path',"exenode",GUICtrlRead($Input2))
+				iniwrite($settingfile,"md5","node",checknodever(GUICtrlRead($Input2)))
+				IniWrite($settingfile,"md5","163m",checknodever(GUICtrlRead($input1)))
 				
-			EndIf
-				GUISetState(@SW_HIDE)
 				If GUICtrlRead($Checkbox1)=$GUI_CHECKED Then
 				kjfs()
 				EndIf
 				If GUICtrlRead($Checkbox1)=$GUI_Unchecked Then
 					If FileExists(@DesktopDir&"\网易云音乐(解锁版).lnk") Then FileDelete(@DesktopDir&"\网易云音乐(解锁版).lnk")
 				EndIf
-				
+				GUISetState(@SW_HIDE)
 				main()
 		Case $Button5
 ;~ 		Case $Checkbox1
-		download163()	
-			
+		download163()
+			check163()
+		Case $Checkbox1
+			iniwrite($settingfile,"md5","node",checknodever(GUICtrlRead($Input2)))
+			IniWrite($settingfile,"md5","163m",checknodever(GUICtrlRead($input1)))
+;~ 			iniwrite($settingfile,"md5","node2",BinaryToString(checknodever(GUICtrlRead($Input2))))
 	EndSwitch
 WEnd
 
 EndFunc
 
+Func check163()
+	If Not FileExists(GUICtrlRead($Input1)) Or   check163ver(GUICtrlRead($Input1)) = 0	Then 
+		GUICtrlSetColor($Input1,0xFF0000)
+		
+	Else
+		GUICtrlSetColor($Input1,0x0000FF)
+		GUICtrlSetData($Labelver,"指定:"&check163ver(GUICtrlRead($Input1)))
+		GUICtrlSetColor($Labelver,0x0000FF)
+		GUICtrlSetState($button5,$gui_disable)
+		
+	EndIf
+	
+EndFunc
 
+Func checknode()
+	If Not FileExists(GUICtrlRead($Input2)) Then 
+		GUICtrlSetColor($Input2,0xFF0000)
+	Else
+		GUICtrlSetColor($Input2,0x0000FF)
+		GUICtrlSetState($button3,$gui_disable)		
+	EndIf
+EndFunc
+
+Func check163ver($filepath)
+Local $ver = FileGetVersion($filepath)
+$verl=StringSplit($ver,".")
+If $verl[1] <=2 and $verl[2] <=9 And $verl[3]<=9 Then 
+Return $ver
+Else
+Return 0
+MsgBox(0,'提示','您所指定的网易云音乐版本不支持代理解锁！',0,$Form1_1)
+EndIf
+EndFunc	
+
+Func checknodever($file)
+$md5= _Crypt_HashFile ( $file, $CALG_MD5 )
+
+;~ MsgBox(0,"md5",$md5)
+Return String($md5)
+EndFunc	
+
+
+	
 Func downloadnode()
 If Not FileExists($node_exe)  Then
 	GUICtrlSetData($button3,"下载中")
+	GUICtrlSetState($button2,$gui_disable)
 	GUICtrlSetState($button4,$gui_disable)
 Local $sFilePath =@ScriptDir&"\unblockneteasemusic-win-x64.exe"
 If Not FileExists($sFilePath) Then
@@ -167,10 +231,10 @@ If Not FileExists($sFilePath) Then
     ; Close the handle returned by InetGet.
     InetClose($hDownload)
 
-WinSetTitle ( $Form1_1, "", "下载完成，准备解压！")
+WinSetTitle ( $Form1_1, "", "下载完成，")
 
     ; Display details about the total number of bytes read and the filesize.
-    MsgBox($MB_SYSTEMMODAL, "UnblockNeteaseMusic 已经下载", "UnblockNeteaseMusic 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
+    MsgBox($MB_SYSTEMMODAL, "unblockneteasemusic-win-x64.exe  已经下载", "unblockneteasemusic-win-x64.exe 已经下载。"&@crlf&"下载文件: " & $iBytesSize & @CRLF & _
             "远程文件: " & $iFileSize,2)
 EndIf
 EndIf
@@ -185,6 +249,7 @@ EndFunc
 Func download163()
 GUICtrlSetData($button5,"下载中")
 GUICtrlSetState($button4,$gui_disable)
+GUICtrlSetState($button1,$gui_disable)
 Local $sFilePath =@ScriptDir&"\CloudMusic.rar"
 If Not FileExists($sFilePath) then
     ; Download the file in the background with the selected option of 'force a reload from the remote site.'
@@ -247,7 +312,7 @@ TraySetToolTip("网易云音乐解锁服务运行中...(退出网易云音乐,�
 ;~ TrayTip("服务运行中...","退出“网易云音乐”,服务自动停止。",2,1)
 Do
 	
-	Sleep(800)  ;~ 实际编译前可根据情况调整此值 ，可以有效的减少CPU的占用。
+	Sleep(100)
 Until Not ProcessExists($pid2) Or Not ProcessExists($pid)
 ProcessClose($pid)
 ProcessClose($pid2)
