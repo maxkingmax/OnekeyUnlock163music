@@ -1,38 +1,31 @@
-Win10&11 x64系统下一键开启nondanee 的“解锁网易云音乐客户端变灰歌曲”
+Win10&11 x64系统下一键开启nondanee 的“云音乐灰歌曲解锁”服务。
 
 ![image](GUI2.png)
 
-##改成外挂程序了，建议下载至网易云音乐程序目录下运行，X64如不能运行就用X86（编译的X64放到其它机器上有时不运行，X86能运行）
 
-##需要提前安装好网易云音乐客户端
-
-##系统  WIN10 X64；
+##系统要求：  WIN10 WIN11 X64；
 
 ##管理员模式运行
 
-##使用unblockneteasemusic-win-x64.exe 默认端口；不显示GUI
-![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/proxy.png)
-
-##需要更新脚本时，到https://github.com/UnblockNeteaseMusic/server/releases
-下载unblockneteasemusic-win-x64.exe覆盖即可
-
-注意事项：不要随便升级网易云音乐，经测试 https://d1.music.126.net/dmusic/cloudmusicsetup2.9.9.199909.exe 可用
-![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/cloudmusicV.png)
-
-2.9.9绿色便携优化版：https://wwt.lanzoul.com/iu3Ro054v9rc 密码:7bef
-
-2.9.8绿色便携优化版：https://wwt.lanzoul.com/ivYEG01yg9qh 密码:bs77
 
 
 功能：就是功能整合，没有技术含量。
 
-1.首次运行程序文件，创建解锁版桌面快捷方式，下次运行快捷方式即可；![image](https://github.com/maxkingmax/win10-Auto-deploy-nondanee-unblockneteasemusic/blob/main/desttoplinkicon.png)
+1.首次运行，需要单击一下“一键部署”按钮，经反复测试，没有问题，只要能正常访问GITHUB，就能正常下载部署。部署成功后将，自动创建解锁版桌面快捷方式，下次运行快捷方式即可；
 
-2.无界面启动unblockneteasemusic-win-x64.exe 和 网易云音乐，并自动给云音乐设置代理模式，使用unblockneteasemusic-win-x64.exe默认的端口和设置。
+需要重新部署，只要删除同目录下的 .ini 文件或其它可执行程序均可再次显示 GUI。 
 
-3.退出云音乐时，自动结束 unblockneteasemusic-win-x64.exe 后台进程并恢复网易云音乐原设置（无代理）模式
+2.云音乐目前可用的最高版本为 2.9.9.1130，使用的是“我爱破解论坛”大神roqi提供的Repack版，不升级，配置与主程序在同一目录下，方便绿携。
+
+3.使用快捷方式 无GUI启动 unblockneteasemusic-win-x64.exe 并自动给云音乐设置代理模式，使用默认的端口配置。
+
+4.不使用本程序运行云音乐主程序时为 无代理模式，方便有时候开代理不能回传音乐至网盘。
+
+5.退出云音乐时，自动结束 unblockneteasemusic-win-x64.exe 后台进程并恢复云音乐原设置（无代理模式）
+
 
 鸣谢：
+
 https://github.com/nondanee/UnblockNeteaseMusic
 
 https://github.com/UnblockNeteaseMusic/server/releases
