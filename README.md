@@ -1,6 +1,6 @@
 Win10&11 x64系统下一键开启nondanee 的“云音乐灰歌曲解锁”服务。
 
-![image](GUI2.png)
+
 
 
 ##系统要求：  WIN10 WIN11 X64；
@@ -21,8 +21,8 @@ Win10&11 x64系统下一键开启nondanee 的“云音乐灰歌曲解锁”服�
 
 4.不使用本程序运行云音乐主程序时为 无代理模式，方便有时候开代理不能回传音乐至网盘。
 
-5.退出云音乐时，自动结束 unblockneteasemusic-win-x64.exe 后台进程并恢复云音乐原设置（无代理模式）
-
+5.退出云音乐时，自动结束 unblockneteasemusic-win-x64.exe 后台进程并恢复云音乐原设置（无代理模式）  
+![image](GUI2.png)  
 
 鸣谢：
 
