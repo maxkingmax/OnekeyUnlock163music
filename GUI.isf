@@ -1,0 +1,149 @@
+; -- Created with ISN Form Studio 2 for ISN AutoIt Studio -- ;
+#include <StaticConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+#Include <GuiButton.au3>
+#include <ProgressConstants.au3>
+
+Global $GUI
+Global $labtxt
+Global $button_OK
+Global $jdt
+
+
+Func onekey_GUI()
+$GUI = GUICreate("云音乐灰歌解锁一键部署工具",350,122,-1,-1,-1,$WS_EX_TOPMOST)
+$labtxt = GUICtrlCreateLabel("",20,15,315,16,-1,-1)
+GUICtrlSetBkColor(-1,"-2")
+$button_OK = GUICtrlCreateButton("一键部署(&O)",90,70,182,44,-1,-1)
+$jdt = GUICtrlCreateProgress(20,40,313,20,-1,-1)
+return $GUI
+EndFunc
+
+
+
+#cs
+[gui]
+Handle_deklaration=global
+Handle_deklaration_const=true
+title=云音乐灰歌解锁一键部署工具
+breite=350
+hoehe=122
+style=-1
+exstyle=$WS_EX_TOPMOST
+bgcolour=0xF0F0F0
+bgimage=none
+handle=$GUI
+parent=
+code=
+codebeforegui=
+xpos=-1
+ypos=-1
+center_gui=true
+title_textmode=normal
+isf_include_once=false
+only_controls_in_isf=false
+const_modus=default
+gui_code_in_function=true
+gui_code_in_function_name=onekey_GUI()
+gui_event_close=
+gui_event_minimize=
+gui_event_restore=
+gui_event_maximize=
+gui_event_mousemove=
+gui_event_primarydown=
+gui_event_primaryup=
+gui_event_secoundarydown=
+gui_event_secoundaryup=
+gui_event_resized=
+gui_event_dropped=
+defaultfont=Ms shell dlg 2
+defaultfontsize=8
+[0x00231E94]
+type=label
+handle=435
+locked=0
+resize=
+x=20
+y=15
+width=315
+height=16
+func=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+tooltip=
+bgimage=
+textcolour=0x000000
+id=$labtxt
+text=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+bgcolour=-2
+code=
+order=0
+tabpage=-1
+iconindex=
+iconlarge=0
+textmode=text
+[0x00332492]
+type=button
+handle=436
+locked=0
+resize=
+x=90
+y=70
+width=182
+height=44
+func=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+tooltip=
+bgimage=
+textcolour=0x000000
+id=$button_OK
+text=一键部署(&O)
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+bgcolour=
+code=
+order=2
+tabpage=-1
+iconindex=
+iconlarge=0
+textmode=text
+[0x003F22FE]
+type=progress
+handle=437
+locked=0
+resize=
+x=20
+y=40
+width=313
+height=20
+func=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+tooltip=
+bgimage=
+textcolour=0x000000
+id=$jdt
+text=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+bgcolour=
+code=
+order=3
+tabpage=-1
+iconindex=
+iconlarge=0
+textmode=func
+#ce
