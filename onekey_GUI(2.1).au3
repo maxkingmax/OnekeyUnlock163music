@@ -156,7 +156,7 @@ If Not FileExists($node_exe)  Then
 
 Local $sFilePath =$node_exe
 If Not FileExists($sFilePath) Then
-    Local $hDownload = InetGet("https://github.com/UnblockNeteaseMusic/server/releases/download/v0.27.0/unblockneteasemusic-win-x64.exe", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
+    Local $hDownload = InetGet("https://github.com/UnblockNeteaseMusic/server/releases/download/v0.27.2/unblockneteasemusic-win-x64.exe", $sFilePath, $INET_FORCERELOAD, $INET_DOWNLOADBACKGROUND)
     Do
         Sleep(250)
 		guictrlsetdata ( $labtxt,  "正在下载 解锁服务 ")
